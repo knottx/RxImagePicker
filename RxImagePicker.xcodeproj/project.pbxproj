@@ -3,13 +3,19 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		174EEF8D3D93E07C4828D8AF /* Pods_RxImagePicker_RxImagePickerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E6E5F433DFC45543DCFB7088 /* Pods_RxImagePicker_RxImagePickerTests.framework */; };
+		8B4A6F3A2654C73E0026AB83 /* UIImagePickerController+RxCreate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B4A6F392654C73E0026AB83 /* UIImagePickerController+RxCreate.swift */; };
+		8B4A6F3C2654C79A0026AB83 /* UIImagePickerController+Rx.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B4A6F3B2654C79A0026AB83 /* UIImagePickerController+Rx.swift */; };
+		8B4A6F3E2654C7BF0026AB83 /* RxImagePickerDelegateProxy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B4A6F3D2654C7BF0026AB83 /* RxImagePickerDelegateProxy.swift */; };
+		8B4A6F422654CAA50026AB83 /* RxImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B4A6F412654CAA50026AB83 /* RxImagePicker.swift */; };
 		8B6680E9265169FD00A2C3BE /* RxImagePicker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B6680DF265169FD00A2C3BE /* RxImagePicker.framework */; };
 		8B6680EE265169FD00A2C3BE /* RxImagePickerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B6680ED265169FD00A2C3BE /* RxImagePickerTests.swift */; };
 		8B6680F0265169FD00A2C3BE /* RxImagePicker.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B6680E2265169FD00A2C3BE /* RxImagePicker.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		B47085180951ED13D0EF625C /* Pods_RxImagePicker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 20247A394442DF66C7872E5F /* Pods_RxImagePicker.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -23,12 +29,22 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		20247A394442DF66C7872E5F /* Pods_RxImagePicker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RxImagePicker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B4A6F392654C73E0026AB83 /* UIImagePickerController+RxCreate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImagePickerController+RxCreate.swift"; sourceTree = "<group>"; };
+		8B4A6F3B2654C79A0026AB83 /* UIImagePickerController+Rx.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImagePickerController+Rx.swift"; sourceTree = "<group>"; };
+		8B4A6F3D2654C7BF0026AB83 /* RxImagePickerDelegateProxy.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxImagePickerDelegateProxy.swift; sourceTree = "<group>"; };
+		8B4A6F412654CAA50026AB83 /* RxImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxImagePicker.swift; sourceTree = "<group>"; };
 		8B6680DF265169FD00A2C3BE /* RxImagePicker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RxImagePicker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B6680E2265169FD00A2C3BE /* RxImagePicker.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RxImagePicker.h; sourceTree = "<group>"; };
 		8B6680E3265169FD00A2C3BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8B6680E8265169FD00A2C3BE /* RxImagePickerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RxImagePickerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B6680ED265169FD00A2C3BE /* RxImagePickerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RxImagePickerTests.swift; sourceTree = "<group>"; };
 		8B6680EF265169FD00A2C3BE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9A6768673197776B84393A81 /* Pods-RxImagePicker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxImagePicker.release.xcconfig"; path = "Target Support Files/Pods-RxImagePicker/Pods-RxImagePicker.release.xcconfig"; sourceTree = "<group>"; };
+		B64643BA6B90B387C2337951 /* Pods-RxImagePicker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxImagePicker.debug.xcconfig"; path = "Target Support Files/Pods-RxImagePicker/Pods-RxImagePicker.debug.xcconfig"; sourceTree = "<group>"; };
+		BC03833686CDB4870C641D30 /* Pods-RxImagePicker-RxImagePickerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxImagePicker-RxImagePickerTests.release.xcconfig"; path = "Target Support Files/Pods-RxImagePicker-RxImagePickerTests/Pods-RxImagePicker-RxImagePickerTests.release.xcconfig"; sourceTree = "<group>"; };
+		C50D4A6B5543274DBA21209D /* Pods-RxImagePicker-RxImagePickerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RxImagePicker-RxImagePickerTests.debug.xcconfig"; path = "Target Support Files/Pods-RxImagePicker-RxImagePickerTests/Pods-RxImagePicker-RxImagePickerTests.debug.xcconfig"; sourceTree = "<group>"; };
+		E6E5F433DFC45543DCFB7088 /* Pods_RxImagePicker_RxImagePickerTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RxImagePicker_RxImagePickerTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,6 +52,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B47085180951ED13D0EF625C /* Pods_RxImagePicker.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,18 +61,31 @@
 			buildActionMask = 2147483647;
 			files = (
 				8B6680E9265169FD00A2C3BE /* RxImagePicker.framework in Frameworks */,
+				174EEF8D3D93E07C4828D8AF /* Pods_RxImagePicker_RxImagePickerTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8B4A6F3F2654C8510026AB83 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				8B4A6F392654C73E0026AB83 /* UIImagePickerController+RxCreate.swift */,
+				8B4A6F3D2654C7BF0026AB83 /* RxImagePickerDelegateProxy.swift */,
+				8B4A6F3B2654C79A0026AB83 /* UIImagePickerController+Rx.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		8B6680D5265169FD00A2C3BE = {
 			isa = PBXGroup;
 			children = (
 				8B6680E1265169FD00A2C3BE /* RxImagePicker */,
 				8B6680EC265169FD00A2C3BE /* RxImagePickerTests */,
 				8B6680E0265169FD00A2C3BE /* Products */,
+				A2D2A9526D71496004FFF176 /* Pods */,
+				A15D039FAE59DFB4A266FD1F /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -73,6 +103,8 @@
 			children = (
 				8B6680E2265169FD00A2C3BE /* RxImagePicker.h */,
 				8B6680E3265169FD00A2C3BE /* Info.plist */,
+				8B4A6F3F2654C8510026AB83 /* Extensions */,
+				8B4A6F412654CAA50026AB83 /* RxImagePicker.swift */,
 			);
 			path = RxImagePicker;
 			sourceTree = "<group>";
@@ -84,6 +116,26 @@
 				8B6680EF265169FD00A2C3BE /* Info.plist */,
 			);
 			path = RxImagePickerTests;
+			sourceTree = "<group>";
+		};
+		A15D039FAE59DFB4A266FD1F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				20247A394442DF66C7872E5F /* Pods_RxImagePicker.framework */,
+				E6E5F433DFC45543DCFB7088 /* Pods_RxImagePicker_RxImagePickerTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		A2D2A9526D71496004FFF176 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				B64643BA6B90B387C2337951 /* Pods-RxImagePicker.debug.xcconfig */,
+				9A6768673197776B84393A81 /* Pods-RxImagePicker.release.xcconfig */,
+				C50D4A6B5543274DBA21209D /* Pods-RxImagePicker-RxImagePickerTests.debug.xcconfig */,
+				BC03833686CDB4870C641D30 /* Pods-RxImagePicker-RxImagePickerTests.release.xcconfig */,
+			);
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -104,6 +156,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8B6680F3265169FD00A2C3BE /* Build configuration list for PBXNativeTarget "RxImagePicker" */;
 			buildPhases = (
+				13D550BD7FE3523584A4386C /* [CP] Check Pods Manifest.lock */,
 				8B6680DA265169FD00A2C3BE /* Headers */,
 				8B6680DB265169FD00A2C3BE /* Sources */,
 				8B6680DC265169FD00A2C3BE /* Frameworks */,
@@ -122,9 +175,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 8B6680F6265169FD00A2C3BE /* Build configuration list for PBXNativeTarget "RxImagePickerTests" */;
 			buildPhases = (
+				FC05928A52DCD3B48AE3654D /* [CP] Check Pods Manifest.lock */,
 				8B6680E4265169FD00A2C3BE /* Sources */,
 				8B6680E5265169FD00A2C3BE /* Frameworks */,
 				8B6680E6265169FD00A2C3BE /* Resources */,
+				1F5B569A921F0AC7000F9CF9 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -147,6 +202,7 @@
 				TargetAttributes = {
 					8B6680DE265169FD00A2C3BE = {
 						CreatedOnToolsVersion = 12.5;
+						LastSwiftMigration = 1250;
 					};
 					8B6680E7265169FD00A2C3BE = {
 						CreatedOnToolsVersion = 12.5;
@@ -189,11 +245,79 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		13D550BD7FE3523584A4386C /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-RxImagePicker-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		1F5B569A921F0AC7000F9CF9 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-RxImagePicker-RxImagePickerTests/Pods-RxImagePicker-RxImagePickerTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-RxImagePicker-RxImagePickerTests/Pods-RxImagePicker-RxImagePickerTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RxImagePicker-RxImagePickerTests/Pods-RxImagePicker-RxImagePickerTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		FC05928A52DCD3B48AE3654D /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-RxImagePicker-RxImagePickerTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		8B6680DB265169FD00A2C3BE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8B4A6F3E2654C7BF0026AB83 /* RxImagePickerDelegateProxy.swift in Sources */,
+				8B4A6F422654CAA50026AB83 /* RxImagePicker.swift in Sources */,
+				8B4A6F3C2654C79A0026AB83 /* UIImagePickerController+Rx.swift in Sources */,
+				8B4A6F3A2654C73E0026AB83 /* UIImagePickerController+RxCreate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -340,7 +464,9 @@
 		};
 		8B6680F4265169FD00A2C3BE /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B64643BA6B90B387C2337951 /* Pods-RxImagePicker.debug.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = QSNJ9UDHM7;
@@ -357,6 +483,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.knottx.RxImagePicker;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -364,7 +491,9 @@
 		};
 		8B6680F5265169FD00A2C3BE /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 9A6768673197776B84393A81 /* Pods-RxImagePicker.release.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = QSNJ9UDHM7;
@@ -388,7 +517,9 @@
 		};
 		8B6680F7265169FD00A2C3BE /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = C50D4A6B5543274DBA21209D /* Pods-RxImagePicker-RxImagePickerTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = QSNJ9UDHM7;
 				INFOPLIST_FILE = RxImagePickerTests/Info.plist;
@@ -406,7 +537,9 @@
 		};
 		8B6680F8265169FD00A2C3BE /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = BC03833686CDB4870C641D30 /* Pods-RxImagePicker-RxImagePickerTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = QSNJ9UDHM7;
 				INFOPLIST_FILE = RxImagePickerTests/Info.plist;
