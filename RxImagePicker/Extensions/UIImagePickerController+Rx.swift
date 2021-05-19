@@ -11,7 +11,7 @@ import RxSwift
 import RxCocoa
 import UIKit
 
-extension Reactive where Base: UIImagePickerController {
+public extension Reactive where Base: UIImagePickerController {
 
     /**
      Reactive wrapper for `delegate` message.
