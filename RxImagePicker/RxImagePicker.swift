@@ -17,17 +17,12 @@ public enum RxImagePickerError: Error {
 
 extension RxImagePickerError: LocalizedError {
     
-    public var title: String {
+    public var message: String? {
         switch self {
-        case .camera: return "error_camera_access_title"
-        case .photoLibrary: return "error_photo_library_access_title"
-        }
-    }
-    
-    public var message: String {
-        switch self {
-        case .camera: return "error_camera_access_message"
-        case .photoLibrary: return "error_photo_library_access_message"
+        case .camera:
+            return Bundle.main.object(forInfoDictionaryKey: "NSCameraUsageDescription") as? String
+        case .photoLibrary:
+            return Bundle.main.object(forInfoDictionaryKey: "NSPhotoLibraryUsageDescription") as? String
         }
     }
     
@@ -45,6 +40,11 @@ public class RxImagePicker {
     public var deleteTitle:String = "Delete"
     public var cancelTitle:String = "Cancel"
     public var openSettingsTitle:String = "Open Settings"
+    
+    public var errorCameraTitle:String = "Open Settings"
+    public var errorCameraMessage:String? = nil
+    public var errorPhotoLibraryTitle:String = "Open Settings"
+    public var erorrPhotoLibraryMessage:String? = nil
     
     public func setButtonTitle(camera:String? = nil, photoLibrary:String? = nil, delete:String? = nil,
                                cancel:String? = nil, openSettings:String? = nil) {
@@ -76,7 +76,7 @@ public class RxImagePicker {
     
     public func requestCameraAuthorization(from viewController: UIViewController, canSkip:Bool = false) -> Completable {
         return Completable.create { [weak self] completable in
-            let error = RxImagePickerError.camera
+            let error:RxImagePickerError = .camera
             switch AVCaptureDevice.authorizationStatus(for: .video) {
             case .authorized:
                 completable(.completed)
@@ -86,7 +86,7 @@ public class RxImagePicker {
                 }
             default:
                 if canSkip {
-                    self?.alertOpenSettings(from: viewController, title: error.title, message: error.message) {
+                    self?.alertOpenSettings(from: viewController, type: error) {
                         completable(.completed)
                     }
                 }else{
@@ -100,7 +100,7 @@ public class RxImagePicker {
     public func requestPhotoLibraryAuthorization(from viewController: UIViewController, canSkip:Bool = false) -> Completable {
         return Completable.create { [weak self] completable in
             let isCameraAvailable = self?.isCameraAvailable() ?? false
-            let error = RxImagePickerError.photoLibrary
+            let error:RxImagePickerError = .photoLibrary
             switch PHPhotoLibrary.authorizationStatus() {
             case .authorized, .limited:
                 completable(.completed)
@@ -115,7 +115,7 @@ public class RxImagePicker {
                 }
             default:
                 if canSkip, isCameraAvailable {
-                    self?.alertOpenSettings(from: viewController, title: error.title, message: error.message) {
+                    self?.alertOpenSettings(from: viewController, type: error) {
                         completable(.completed)
                     }
                 }else{
@@ -126,8 +126,20 @@ public class RxImagePicker {
         }
     }
     
-    public func alertOpenSettings(from viewController: UIViewController, title: String?, message: String?, cancelCompletion: (() -> ())? = nil) {
+    
+    public func alertOpenSettings(from viewController: UIViewController, type:RxImagePickerError, cancelCompletion: (() -> ())? = nil) {
         DispatchQueue.main.async {
+            var title:String = ""
+            var message:String? = nil
+            switch type {
+            case .camera:
+                title = self.errorCameraTitle
+                message = self.errorCameraMessage ?? type.message
+            case .photoLibrary:
+                title = self.errorPhotoLibraryTitle
+                message = self.erorrPhotoLibraryMessage ?? type.message
+            }
+            
             let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
             let cancel = UIAlertAction(title: self.cancelTitle, style: .cancel) { _ in
                 cancelCompletion?()
@@ -143,6 +155,7 @@ public class RxImagePicker {
             viewController.present(alertController, animated: true, completion: nil)
         }
     }
+    
     
     public func presentImagePicker(from viewController: UIViewController, allowEditing: Bool = false, allowDelete: Bool = false,
                             completion: @escaping ((didCancel: Bool, image: UIImage?)) -> Void) {
@@ -187,6 +200,9 @@ public class RxImagePicker {
             viewController.present(alertController, animated: true, completion: nil)
         }
     }
+    
+    
+    //MARK: - Private
     
     private func presentImagePickerController(from viewController: UIViewController, sourceType: UIImagePickerController.SourceType, allowEditing: Bool, completion: @escaping (UIImage?) -> Void) {
         UIImagePickerController.rx.createWithParent(viewController, animated: true) { picker in
