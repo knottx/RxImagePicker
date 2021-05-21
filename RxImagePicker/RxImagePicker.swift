@@ -295,4 +295,82 @@ public class RxImagePicker {
         }.disposed(by: self.bag)
     }
     
+    
+    
+    public func showImagePicker(at viewController: UIViewController, title:String?, message:String?,
+                                   allowEditing: Bool = false, allowDelete: Bool = false,
+                                   onCompleted: @escaping (UIImage?) -> (),
+                                   onCancel: @escaping () -> (),
+                                   onDelete: @escaping () -> (),
+                                   onError: @escaping (Error) -> ()) {
+        self.requestCameraAndPhotoAccess(at: viewController) { [weak self] granted in
+            if granted, let `self` = self {
+                self.showSelectSource(at: viewController, title: title, message: message,
+                                      onCompleted: onCompleted, onCancel: onCancel, onDelete: onDelete, onError: onError)
+            }else{
+                onCancel()
+            }
+        }
+    }
+    
+    private func showSelectSource(at viewController: UIViewController, title:String?, message:String?,
+                                   allowEditing: Bool = false, allowDelete: Bool = false,
+                                   onCompleted: @escaping (UIImage?) -> (),
+                                   onCancel: @escaping () -> (),
+                                   onDelete: @escaping () -> (),
+                                   onError: @escaping (Error) -> ()) {
+        DispatchQueue.main.async { [weak self] in
+            let isCameraAvailable = self?.isCameraAvailable() ?? false
+            let isPhotoLibraryAvailable = self?.isPhotoLibraryAvailable() ?? false
+            guard isCameraAvailable || isPhotoLibraryAvailable else {
+                onCancel()
+                return
+            }
+            let alertController = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+            
+            if isCameraAvailable {
+                let camera = UIAlertAction(title: self?.cameraTitle, style: .default) { [weak self] _ in
+                    self?.showImagePickerController(from: viewController, sourceType: .camera, allowEditing: allowEditing, onCompleted: onCompleted, onError: onError)
+                }
+                alertController.addAction(camera)
+            }
+            
+            if isPhotoLibraryAvailable {
+                let photoLibrary = UIAlertAction(title: self?.photoLibraryTitle, style: .default) { [weak self] _ in
+                    self?.showImagePickerController(from: viewController, sourceType: .photoLibrary, allowEditing: allowEditing, onCompleted: onCompleted, onError: onError)
+                }
+                alertController.addAction(photoLibrary)
+            }
+            
+            
+            if allowDelete {
+                let delete = UIAlertAction(title: self?.deleteTitle, style: .destructive) { _ in
+                    onDelete()
+                }
+                alertController.addAction(delete)
+            }
+            
+            let cancel = UIAlertAction(title: self?.cancelTitle, style: .cancel) { _ in
+                onCancel()
+            }
+            alertController.addAction(cancel)
+            viewController.present(alertController, animated: true, completion: nil)
+        }
+    }
+    
+    private func showImagePickerController(from viewController: UIViewController, sourceType: UIImagePickerController.SourceType, allowEditing: Bool,
+                                           onCompleted: @escaping (UIImage?) -> (),
+                                           onError: @escaping (Error) -> ()) {
+        UIImagePickerController.rx.createWithParent(viewController, animated: true) { picker in
+            picker.sourceType = sourceType
+            picker.allowsEditing = allowEditing
+        }.flatMap { $0.rx.didFinishPickingMediaWithInfo }.take(1).subscribe { dict in
+            let editedImage = dict[.editedImage] as? UIImage
+            let originalImage = dict[.originalImage] as? UIImage
+            onCompleted(allowEditing ? editedImage : originalImage)
+        } onError: { error in
+            print("🏞: [RxImagePicker] => Error: \(error.localizedDescription)")
+            onError(error)
+        }.disposed(by: self.bag)
+    }
 }
