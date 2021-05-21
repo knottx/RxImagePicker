@@ -8,12 +8,9 @@
 import UIKit
 import Photos
 
-public enum RxImagePickerError: Error {
+public enum RxImagePickerAccessType {
     case camera
     case photoLibrary
-}
-
-extension RxImagePickerError: LocalizedError {
     
     public var message: String? {
         switch self {
@@ -44,6 +41,7 @@ public class RxImagePicker: NSObject {
     
     private var imagePickerViewController: UIImagePickerController?
     private var onCompleted: ((UIImage?) -> ())?
+    private var onCancel: (() -> ())?
     private var allowEditing: Bool = false
     
     public func setButtonTitle(camera:String? = nil, photoLibrary:String? = nil, delete:String? = nil,
@@ -55,7 +53,7 @@ public class RxImagePicker: NSObject {
         self.openSettingsTitle = openSettings ?? self.openSettingsTitle
     }
     
-    public func setErrorMessage(type:RxImagePickerError, title:String, message:String?) {
+    public func setErrorMessage(type:RxImagePickerAccessType, title:String, message:String?) {
         switch type {
         case .camera:
             self.errorCameraTitle = title
@@ -187,19 +185,17 @@ public class RxImagePicker: NSObject {
     
     //MARK: - Alert Open Settings
     
-    public func alertOpenSettings(from viewController: UIViewController, type:RxImagePickerError?, cancelCompletion: (() -> ())? = nil) {
+    private func alertOpenSettings(from viewController: UIViewController, type:RxImagePickerAccessType, cancelCompletion: (() -> ())? = nil) {
         DispatchQueue.main.async { [weak self] in
             var title:String? = nil
             var message:String? = nil
             switch type {
             case .camera:
                 title = self?.errorCameraTitle
-                message = self?.errorCameraMessage ?? type?.message
+                message = self?.errorCameraMessage ?? type.message
             case .photoLibrary:
                 title = self?.errorPhotoLibraryTitle
-                message = self?.erorrPhotoLibraryMessage ?? type?.message
-            default:
-                title = self?.openSettingsTitle
+                message = self?.erorrPhotoLibraryMessage ?? type.message
             }
             
             let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
@@ -256,6 +252,7 @@ public class RxImagePicker: NSObject {
             
             self.allowEditing = allowEditing
             self.onCompleted = onCompleted
+            self.onCancel = onCancel
             
             let alertController = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
             
@@ -298,6 +295,7 @@ public class RxImagePicker: NSObject {
 extension RxImagePicker: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     public func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        self.onCancel?()
         picker.dismiss(animated: true, completion: nil)
     }
     
