@@ -28,7 +28,6 @@ extension RxImagePickerError: LocalizedError {
     
 }
 
-
 public class RxImagePicker {
     
     public static let shared:RxImagePicker = RxImagePicker()
@@ -55,6 +54,20 @@ public class RxImagePicker {
         self.openSettingsTitle = openSettings ?? self.openSettingsTitle
     }
     
+    public func setErrorMessage(type:RxImagePickerError, title:String, message:String?) {
+        switch type {
+        case .camera:
+            self.errorCameraTitle = title
+            self.errorCameraMessage = message
+        case .photoLibrary:
+            self.errorPhotoLibraryTitle = title
+            self.erorrPhotoLibraryMessage = message
+        }
+    }
+    
+    
+    //MARK: - Check Available
+    
     public func isCameraAvailable() -> Bool {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized: return true
@@ -69,75 +82,114 @@ public class RxImagePicker {
         }
     }
     
-    public func requestCameraAndPhotoAuthorization(from viewController: UIViewController) -> Completable {
-        return self.requestCameraAuthorization(from: viewController, canSkip: true)
-            .concat(self.requestPhotoLibraryAuthorization(from: viewController, canSkip: true))
-    }
-    
-    public func requestCameraAuthorization(from viewController: UIViewController, canSkip:Bool = false) -> Completable {
-        return Completable.create { [weak self] completable in
-            let error:RxImagePickerError = .camera
-            switch AVCaptureDevice.authorizationStatus(for: .video) {
-            case .authorized:
-                completable(.completed)
-            case .notDetermined:
-                AVCaptureDevice.requestAccess(for: .video) { granted in
-                    completable(canSkip ? .completed : (granted ? .completed: .error(error)))
-                }
-            default:
-                if canSkip {
-                    self?.alertOpenSettings(from: viewController, type: error) {
-                        completable(.completed)
-                    }
+    public func requestCameraAccess(at viewController: UIViewController, completion: @escaping (Bool) -> ()) {
+        switch AVCaptureDevice.authorizationStatus(for: .video) {
+        case .authorized:
+            completion(true)
+        case .notDetermined:
+            AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
+                if granted {
+                    completion(true)
                 }else{
-                    completable(.error(error))
+                    self?.alertOpenSettings(from: viewController, type: .camera) {
+                        completion(false)
+                    }
                 }
             }
-            return Disposables.create()
+        default:
+            self.alertOpenSettings(from: viewController, type: .camera) {
+                completion(false)
+            }
         }
     }
     
-    public func requestPhotoLibraryAuthorization(from viewController: UIViewController, canSkip:Bool = false) -> Completable {
-        return Completable.create { [weak self] completable in
-            let isCameraAvailable = self?.isCameraAvailable() ?? false
-            let error:RxImagePickerError = .photoLibrary
-            switch PHPhotoLibrary.authorizationStatus() {
-            case .authorized, .limited:
-                completable(.completed)
-            case .notDetermined:
-                PHPhotoLibrary.requestAuthorization { status in
-                    switch status {
-                    case .authorized, .limited:
-                        completable(.completed)
-                    default:
-                        completable((canSkip && isCameraAvailable) ? .completed : .error(error))
+    public func requestPhotoLibraryAccess(at viewController: UIViewController, completion: @escaping (Bool) -> ()) {
+        switch PHPhotoLibrary.authorizationStatus() {
+        case .authorized, .limited:
+            completion(true)
+        case .notDetermined:
+            PHPhotoLibrary.requestAuthorization { [weak self] status in
+                switch status {
+                case .authorized, .limited:
+                    completion(true)
+                default:
+                    self?.alertOpenSettings(from: viewController, type: .photoLibrary) {
+                        completion(false)
                     }
-                }
-            default:
-                if canSkip, isCameraAvailable {
-                    self?.alertOpenSettings(from: viewController, type: error) {
-                        completable(.completed)
-                    }
-                }else{
-                    completable(.error(error))
                 }
             }
-            return Disposables.create()
+        default:
+            self.alertOpenSettings(from: viewController, type: .photoLibrary) {
+                completion(false)
+            }
         }
     }
     
+    public func requestCameraAndPhotoAccess(at viewController: UIViewController, completion: @escaping (Bool) -> ()) {
+        self.requestCamera(from: viewController) {
+            self.requestPhotoLibrary(from: viewController) { granted in
+                completion(granted)
+            }
+        }
+    }
     
-    public func alertOpenSettings(from viewController: UIViewController, type:RxImagePickerError, cancelCompletion: (() -> ())? = nil) {
+    private func requestCamera(from viewController: UIViewController, completion: @escaping () -> ()) {
+        switch AVCaptureDevice.authorizationStatus(for: .video) {
+        case .authorized:
+            completion()
+        case .notDetermined:
+            AVCaptureDevice.requestAccess(for: .video) { granted in
+                completion()
+            }
+        default:
+            self.alertOpenSettings(from: viewController, type: .camera) {
+                completion()
+            }
+        }
+    }
+    
+    private func requestPhotoLibrary(from viewController: UIViewController, completion: @escaping (Bool) -> ()) {
+        let isCameraAvailable = self.isCameraAvailable()
+        switch PHPhotoLibrary.authorizationStatus() {
+        case .authorized, .limited:
+            completion(true)
+        case .notDetermined:
+            PHPhotoLibrary.requestAuthorization { [weak self] status in
+                switch status {
+                case .authorized, .limited:
+                    completion(true)
+                default:
+                    if isCameraAvailable {
+                        completion(true)
+                    }else{
+                        self?.alertOpenSettings(from: viewController, type: .photoLibrary) {
+                            completion(false)
+                        }
+                    }
+                }
+            }
+        default:
+            self.alertOpenSettings(from: viewController, type: .photoLibrary) {
+                completion(isCameraAvailable)
+            }
+        }
+    }
+    
+    //MARK: - Alert Open Settings
+    
+    public func alertOpenSettings(from viewController: UIViewController, type:RxImagePickerError?, cancelCompletion: (() -> ())? = nil) {
         DispatchQueue.main.async {
             var title:String = ""
             var message:String? = nil
             switch type {
             case .camera:
                 title = self.errorCameraTitle
-                message = self.errorCameraMessage ?? type.message
+                message = self.errorCameraMessage ?? type?.message
             case .photoLibrary:
                 title = self.errorPhotoLibraryTitle
-                message = self.erorrPhotoLibraryMessage ?? type.message
+                message = self.erorrPhotoLibraryMessage ?? type?.message
+            default:
+                title = self.openSettingsTitle
             }
             
             let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
@@ -157,8 +209,11 @@ public class RxImagePicker {
     }
     
     
-    public func presentImagePicker(from viewController: UIViewController, allowEditing: Bool = false, allowDelete: Bool = false,
-                            completion: @escaping ((didCancel: Bool, image: UIImage?)) -> Void) {
+    //MARK: - Present ImagePicker
+    
+    public func presentImagePicker(from viewController: UIViewController, title:String?, message:String?,
+                                   allowEditing: Bool = false, allowDelete: Bool = false,
+                                   completion: @escaping ((didCancel: Bool, image: UIImage?)) -> Void) {
         DispatchQueue.main.async { [weak self] in
             let isCameraAvailable = self?.isCameraAvailable() ?? false
             let isPhotoLibraryAvailable = self?.isPhotoLibraryAvailable() ?? false
@@ -166,7 +221,8 @@ public class RxImagePicker {
                 completion((didCancel: true, image: nil))
                 return
             }
-            let alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+            let alertController = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
+            
             if isCameraAvailable {
                 let camera = UIAlertAction(title: self?.cameraTitle, style: .default) { [weak self] _ in
                     self?.presentImagePickerController(from: viewController, sourceType: .camera, allowEditing: allowEditing) { (image) in
