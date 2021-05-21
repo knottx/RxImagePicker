@@ -45,6 +45,8 @@ public class RxImagePicker {
     public var errorPhotoLibraryTitle:String = "Open Settings"
     public var erorrPhotoLibraryMessage:String? = nil
     
+    public let imagePickerController = UIImagePickerController()
+    
     public func setButtonTitle(camera:String? = nil, photoLibrary:String? = nil, delete:String? = nil,
                                cancel:String? = nil, openSettings:String? = nil) {
         self.cameraTitle = camera ?? self.cameraTitle
@@ -282,7 +284,7 @@ public class RxImagePicker {
     //MARK: - Private
     
     private func presentImagePickerController(from viewController: UIViewController, sourceType: UIImagePickerController.SourceType, allowEditing: Bool, completion: @escaping ((error:Error?, image:UIImage?)) -> Void) {
-        UIImagePickerController.rx.createWithParent(viewController, animated: true) { picker in
+        UIImagePickerController.rx.createWithParent(viewController, imagePicker: self.imagePickerController, animated: true) { picker in
             picker.sourceType = sourceType
             picker.allowsEditing = allowEditing
         }.flatMap { $0.rx.didFinishPickingMediaWithInfo }.take(1).subscribe { dict in

@@ -20,9 +20,9 @@ open class RxImagePickerDelegateProxy: RxNavigationControllerDelegateProxy, UIIm
 
 public extension Reactive where Base: UIImagePickerController {
     
-    static func createWithParent(_ parent: UIViewController?, animated: Bool = true, configureImagePicker: @escaping (UIImagePickerController) throws -> Void = { x in }) -> Observable<UIImagePickerController> {
+    static func createWithParent(_ parent: UIViewController?, imagePicker: UIImagePickerController, animated: Bool = true, configureImagePicker: @escaping (UIImagePickerController) throws -> Void = { x in }) -> Observable<UIImagePickerController> {
         return Observable.create { [weak parent] observable in
-            let imagePicker = UIImagePickerController()
+//            let imagePicker = UIImagePickerController()
             let dismissDisposable = imagePicker.rx.didCancel.bind { [weak imagePicker] _ in
                 guard let `imagePicker` = imagePicker else { return }
                 dismissViewController(imagePicker, animated: animated)

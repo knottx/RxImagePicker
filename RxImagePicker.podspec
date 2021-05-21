@@ -1,7 +1,7 @@
 Pod::Spec.new do |spec|
 
   spec.name         = "RxImagePicker"
-  spec.version      = "0.0.2"
+  spec.version      = "0.0.3"
   spec.summary      = "RxImagePicker"
 
   spec.homepage     = "https://github.com/knottx/RxImagePicker"
