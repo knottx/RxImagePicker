@@ -18,9 +18,6 @@ open class RxImagePickerDelegateProxy: RxNavigationControllerDelegateProxy, UIIm
 
 }
 
-
-
-
 public extension Reactive where Base: UIImagePickerController {
     
     static func createWithParent(_ parent: UIViewController?, animated: Bool = true, configureImagePicker: @escaping (UIImagePickerController) throws -> Void = { x in }) -> Observable<UIImagePickerController> {
@@ -76,7 +73,6 @@ private func castOrThrow<T>(_ resultType: T.Type, _ object: Any) throws -> T {
     guard let returnValue = object as? T else {
         throw RxCocoaError.castingError(object: object, targetType: resultType)
     }
-
     return returnValue
 }
 
