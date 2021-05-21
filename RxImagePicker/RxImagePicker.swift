@@ -82,6 +82,9 @@ public class RxImagePicker {
         }
     }
     
+    
+    //MARK: - Camera
+    
     public func requestCameraAccess(at viewController: UIViewController, completion: @escaping (Bool) -> ()) {
         switch AVCaptureDevice.authorizationStatus(for: .video) {
         case .authorized:
@@ -102,6 +105,9 @@ public class RxImagePicker {
             }
         }
     }
+    
+    
+    //MARK: - Photo Library
     
     public func requestPhotoLibraryAccess(at viewController: UIViewController, completion: @escaping (Bool) -> ()) {
         switch PHPhotoLibrary.authorizationStatus() {
@@ -124,6 +130,9 @@ public class RxImagePicker {
             }
         }
     }
+    
+    
+    //MARK: - Camera and Photo Library
     
     public func requestCameraAndPhotoAccess(at viewController: UIViewController, completion: @escaping (Bool) -> ()) {
         self.requestCamera(from: viewController) {
@@ -178,27 +187,27 @@ public class RxImagePicker {
     //MARK: - Alert Open Settings
     
     public func alertOpenSettings(from viewController: UIViewController, type:RxImagePickerError?, cancelCompletion: (() -> ())? = nil) {
-        DispatchQueue.main.async {
-            var title:String = ""
+        DispatchQueue.main.async { [weak self] in
+            var title:String? = nil
             var message:String? = nil
             switch type {
             case .camera:
-                title = self.errorCameraTitle
-                message = self.errorCameraMessage ?? type?.message
+                title = self?.errorCameraTitle
+                message = self?.errorCameraMessage ?? type?.message
             case .photoLibrary:
-                title = self.errorPhotoLibraryTitle
-                message = self.erorrPhotoLibraryMessage ?? type?.message
+                title = self?.errorPhotoLibraryTitle
+                message = self?.erorrPhotoLibraryMessage ?? type?.message
             default:
-                title = self.openSettingsTitle
+                title = self?.openSettingsTitle
             }
             
             let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
-            let cancel = UIAlertAction(title: self.cancelTitle, style: .cancel) { _ in
+            let cancel = UIAlertAction(title: self?.cancelTitle, style: .cancel) { _ in
                 cancelCompletion?()
             }
             alertController.addAction(cancel)
             
-            let openSettings = UIAlertAction(title: self.openSettingsTitle, style: .default) { _ in
+            let openSettings = UIAlertAction(title: self?.openSettingsTitle, style: .default) { _ in
                 guard let url = URL(string: UIApplication.openSettingsURLString),
                       UIApplication.shared.canOpenURL(url) else { return }
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
@@ -213,20 +222,32 @@ public class RxImagePicker {
     
     public func presentImagePicker(from viewController: UIViewController, title:String?, message:String?,
                                    allowEditing: Bool = false, allowDelete: Bool = false,
-                                   completion: @escaping ((didCancel: Bool, image: UIImage?)) -> Void) {
+                                   completion: @escaping ((error:Error?, didCancel: Bool, image: UIImage?)) -> ()) {
+        self.requestCameraAndPhotoAccess(at: viewController) { [weak self] granted in
+            if granted, let `self` = self {
+                self.alertSelectSource(at: viewController, title: title, message: message, completion: completion)
+            }else{
+                completion((error: nil, didCancel: true, image: nil))
+            }
+        }
+    }
+    
+    private func alertSelectSource(at viewController: UIViewController, title:String?, message:String?,
+                                   allowEditing: Bool = false, allowDelete: Bool = false,
+                                   completion: @escaping ((error:Error?, didCancel: Bool, image: UIImage?)) -> ()) {
         DispatchQueue.main.async { [weak self] in
             let isCameraAvailable = self?.isCameraAvailable() ?? false
             let isPhotoLibraryAvailable = self?.isPhotoLibraryAvailable() ?? false
             guard isCameraAvailable || isPhotoLibraryAvailable else {
-                completion((didCancel: true, image: nil))
+                completion((error: nil, didCancel: true, image: nil))
                 return
             }
             let alertController = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
             
             if isCameraAvailable {
                 let camera = UIAlertAction(title: self?.cameraTitle, style: .default) { [weak self] _ in
-                    self?.presentImagePickerController(from: viewController, sourceType: .camera, allowEditing: allowEditing) { (image) in
-                        completion((didCancel: false, image: image))
+                    self?.presentImagePickerController(from: viewController, sourceType: .camera, allowEditing: allowEditing) { (error, image) in
+                        completion((error: error, didCancel: false, image: image))
                     }
                 }
                 alertController.addAction(camera)
@@ -234,8 +255,8 @@ public class RxImagePicker {
             
             if isPhotoLibraryAvailable {
                 let photoLibrary = UIAlertAction(title: self?.photoLibraryTitle, style: .default) { [weak self] _ in
-                    self?.presentImagePickerController(from: viewController, sourceType: .photoLibrary, allowEditing: allowEditing) { (image) in
-                        completion((didCancel: false, image: image))
+                    self?.presentImagePickerController(from: viewController, sourceType: .photoLibrary, allowEditing: allowEditing) { (error, image) in
+                        completion((error: error, didCancel: false, image: image))
                     }
                 }
                 alertController.addAction(photoLibrary)
@@ -244,13 +265,13 @@ public class RxImagePicker {
             
             if allowDelete {
                 let delete = UIAlertAction(title: self?.deleteTitle, style: .destructive) { _ in
-                    completion((didCancel: false, image: nil))
+                    completion((error: nil, didCancel: false, image: nil))
                 }
                 alertController.addAction(delete)
             }
             
             let cancel = UIAlertAction(title: self?.cancelTitle, style: .cancel) { _ in
-                completion((didCancel: true, image: nil))
+                completion((error: nil, didCancel: true, image: nil))
             }
             alertController.addAction(cancel)
             viewController.present(alertController, animated: true, completion: nil)
@@ -260,17 +281,17 @@ public class RxImagePicker {
     
     //MARK: - Private
     
-    private func presentImagePickerController(from viewController: UIViewController, sourceType: UIImagePickerController.SourceType, allowEditing: Bool, completion: @escaping (UIImage?) -> Void) {
+    private func presentImagePickerController(from viewController: UIViewController, sourceType: UIImagePickerController.SourceType, allowEditing: Bool, completion: @escaping ((error:Error?, image:UIImage?)) -> Void) {
         UIImagePickerController.rx.createWithParent(viewController, animated: true) { picker in
             picker.sourceType = sourceType
             picker.allowsEditing = allowEditing
         }.flatMap { $0.rx.didFinishPickingMediaWithInfo }.take(1).subscribe { dict in
             let editedImage = dict[.editedImage] as? UIImage
             let originalImage = dict[.originalImage] as? UIImage
-            completion(allowEditing ? editedImage : originalImage)
+            completion((error: nil, image: allowEditing ? editedImage : originalImage))
         } onError: { error in
             print("🏞: [RxImagePicker] => Error: \(error.localizedDescription)")
-            completion(nil)
+            completion((error: error, image: nil))
         }.disposed(by: self.bag)
     }
     
