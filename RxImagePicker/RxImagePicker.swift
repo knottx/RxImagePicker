@@ -217,13 +217,13 @@ public class RxImagePicker: NSObject {
     
     //MARK: - Present ImagePicker
     
-    public func presentImagePicker(at viewController: UIViewController, title:String?, message:String?, allowEditing: Bool = false,
+    public func presentImagePicker(at viewController: UIViewController, title:String?, message:String?, allowEditing: Bool,
                                    onCompleted: @escaping (UIImage?) -> (),
                                    onCancel: (() -> ())? = nil,
                                    onDelete: (() -> ())? = nil) {
         self.requestCameraAndPhotoAccess(at: viewController) { [weak self] granted in
             if granted, let `self` = self {
-                self.showSelectSource(at: viewController, title: title, message: message,
+                self.showSelectSource(at: viewController, title: title, message: message, allowEditing: allowEditing,
                                       onCompleted: onCompleted, onCancel: onCancel, onDelete: onDelete)
             }else{
                 onCancel?()
@@ -231,7 +231,7 @@ public class RxImagePicker: NSObject {
         }
     }
     
-    private func showSelectSource(at viewController: UIViewController, title:String?, message:String?, allowEditing: Bool = false,
+    private func showSelectSource(at viewController: UIViewController, title:String?, message:String?, allowEditing: Bool,
                                    onCompleted: @escaping (UIImage?) -> (),
                                    onCancel: (() -> ())?,
                                    onDelete: (() -> ())?) {
@@ -247,8 +247,8 @@ public class RxImagePicker: NSObject {
             if self.imagePickerViewController == nil {
                 self.imagePickerViewController = UIImagePickerController()
                 self.imagePickerViewController!.delegate = self
-                self.imagePickerViewController!.allowsEditing = allowEditing
             }
+            self.imagePickerViewController!.allowsEditing = allowEditing
             
             self.allowEditing = allowEditing
             self.onCompleted = onCompleted

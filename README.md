@@ -12,25 +12,19 @@ pod 'RxImagePicker'
 ```swift
 import RxImagePicker
 ````
-Configure a **RxImagePicker** Delegate Proxy, typically in your app's 
-<br>
-`application:didFinishLaunchingWithOptions: method:`
-```swift
-RxImagePickerDelegateProxy.register { RxImagePickerDelegateProxy(imagePicker: $0) }
-```
 
 Request access only Camera
 ```swift
-RxImagePicker.shared.requestCameraAccess(at: self) { [weak self] granted in
-    guard granted, let `self` = self else { return }
+RxImagePicker.shared.requestCameraAccess(at: self) { granted in
+    guard granted else { return }
     // handle after Camera authorized.
 }
 ```
 
 Request access only Photo Library
 ```swift
-RxImagePicker.shared.requestPhotoLibraryAccess(at: self) { [weak self] granted in
-    guard granted, let `self` = self else { return }
+RxImagePicker.shared.requestPhotoLibraryAccess(at: self) { granted in
+    guard granted else { return }
     // handle after Photo Library authorized.
 }
 ```
@@ -38,24 +32,23 @@ RxImagePicker.shared.requestPhotoLibraryAccess(at: self) { [weak self] granted i
 Request access Camera and Photo Library
 ```swift
 RxImagePicker.shared.requestCameraAndPhotoAccess(at: self) { [weak self] granted in
-    guard granted, let `self` = self else { return }
+    guard granted else { return }
     // handle after Camera and Photo Library authorized.
 }
 ```
 
 Present ImagePicker (Request access Camera and Photo Library Automatically):
 ```swift
-RxImagePicker.shared.presentImagePicker(from: self, title: <String?>, message: <String?>, allowEditing: <Bool>, allowDelete: <Bool>) { [weak self] (error, didCancel, image) in
-    guard !didCancel, let `self` = self, error == nil else {
-        print(error?.localizedDescription)
-        // handle error
-        return
-    }
+RxImagePicker.shared.presentImagePicker(at: self, title: <String?>, message: <String?>, allowEditing: <Bool>) { image in
+    print("Has Image: \(image != nil)")
     // handle after get image.
-    // if select "delete" image is nil.
+} onCancel: {
+    // handle did Cancel.
+} onDelete: {
+    // handle did Delete 
+    // if remove onDelete will not show "Delete" button.
 }
 ```
-
 
 ## 📋 Requirements
 
