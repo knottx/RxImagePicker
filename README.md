@@ -13,6 +13,7 @@ pod 'RxImagePicker'
 import RxImagePicker
 ````
 Configure a **RxImagePicker** Delegate Proxy, typically in your app's 
+<br>
 `application:didFinishLaunchingWithOptions: method:`
 ```swift
 RxImagePickerDelegateProxy.register { RxImagePickerDelegateProxy(imagePicker: $0) }
