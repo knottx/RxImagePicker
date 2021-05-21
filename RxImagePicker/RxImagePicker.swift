@@ -300,15 +300,15 @@ public class RxImagePicker {
     public func showImagePicker(at viewController: UIViewController, title:String?, message:String?,
                                    allowEditing: Bool = false, allowDelete: Bool = false,
                                    onCompleted: @escaping (UIImage?) -> (),
-                                   onCancel: @escaping () -> (),
-                                   onDelete: @escaping () -> (),
-                                   onError: @escaping (Error) -> ()) {
+                                   onCancel: (() -> ())? = nil,
+                                   onDelete: (() -> ())? = nil,
+                                   onError: ((Error) -> ())? = nil) {
         self.requestCameraAndPhotoAccess(at: viewController) { [weak self] granted in
             if granted, let `self` = self {
                 self.showSelectSource(at: viewController, title: title, message: message,
                                       onCompleted: onCompleted, onCancel: onCancel, onDelete: onDelete, onError: onError)
             }else{
-                onCancel()
+                onCancel?()
             }
         }
     }
@@ -316,14 +316,14 @@ public class RxImagePicker {
     private func showSelectSource(at viewController: UIViewController, title:String?, message:String?,
                                    allowEditing: Bool = false, allowDelete: Bool = false,
                                    onCompleted: @escaping (UIImage?) -> (),
-                                   onCancel: @escaping () -> (),
-                                   onDelete: @escaping () -> (),
-                                   onError: @escaping (Error) -> ()) {
+                                   onCancel: (() -> ())?,
+                                   onDelete: (() -> ())?,
+                                   onError: ((Error) -> ())?) {
         DispatchQueue.main.async { [weak self] in
             let isCameraAvailable = self?.isCameraAvailable() ?? false
             let isPhotoLibraryAvailable = self?.isPhotoLibraryAvailable() ?? false
             guard isCameraAvailable || isPhotoLibraryAvailable else {
-                onCancel()
+                onCancel?()
                 return
             }
             let alertController = UIAlertController(title: title, message: message, preferredStyle: .actionSheet)
@@ -345,13 +345,13 @@ public class RxImagePicker {
             
             if allowDelete {
                 let delete = UIAlertAction(title: self?.deleteTitle, style: .destructive) { _ in
-                    onDelete()
+                    onDelete?()
                 }
                 alertController.addAction(delete)
             }
             
             let cancel = UIAlertAction(title: self?.cancelTitle, style: .cancel) { _ in
-                onCancel()
+                onCancel?()
             }
             alertController.addAction(cancel)
             viewController.present(alertController, animated: true, completion: nil)
@@ -360,7 +360,7 @@ public class RxImagePicker {
     
     private func showImagePickerController(from viewController: UIViewController, sourceType: UIImagePickerController.SourceType, allowEditing: Bool,
                                            onCompleted: @escaping (UIImage?) -> (),
-                                           onError: @escaping (Error) -> ()) {
+                                           onError: ((Error) -> ())?) {
         UIImagePickerController.rx.createWithParent(viewController, animated: true) { picker in
             picker.sourceType = sourceType
             picker.allowsEditing = allowEditing
@@ -370,7 +370,7 @@ public class RxImagePicker {
             onCompleted(allowEditing ? editedImage : originalImage)
         } onError: { error in
             print("🏞: [RxImagePicker] => Error: \(error.localizedDescription)")
-            onError(error)
+            onError?(error)
         }.disposed(by: self.bag)
     }
 }
